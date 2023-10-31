@@ -26,13 +26,13 @@ export const invoice = {
             id: 2,
             product: 'Keyboard Mechanic',
             price: 200,
-            quantify: 1
+            quantify: 2
         },
         {
             id: 3,
             product: 'Mouse',
-            price: 0,
-            quantify: 1
+            price: 20,
+            quantify: 5
         }
     ]
 }

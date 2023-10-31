@@ -4,10 +4,11 @@ import { CompanyView } from "./Components/CompanyView";
 import { Header } from "./Components/Header";
 import { InvoiceView } from "./Components/InvoiceView";
 import { ProductsView } from "./Components/ProductsView";
+import { TotalView } from "./Components/TotalView";
 
 export default function InvoiceApp() {
 
-    const {id, name, client, company, items} = getInvoice();
+    const {id, name, client, company, items, total} = getInvoice();
 
     return (
         <>
@@ -41,6 +42,7 @@ export default function InvoiceApp() {
                             title={"Products"}
                             items={items}
                         />
+                        <TotalView total={total}/>
                     </div>
                 </div>
             </div>
