@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export const TotalView = ({total}) => {
   return (
     <>
@@ -7,3 +9,7 @@ export const TotalView = ({total}) => {
     </>
   );
 };
+
+TotalView.propTypes = {
+  total: PropTypes.number.isRequired,
+}
