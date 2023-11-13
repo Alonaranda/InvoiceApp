@@ -1,36 +1,58 @@
-import { useState } from "react";
-import { getInvoice } from "./Services/getInvoice";
+import { useState, useEffect } from "react";
+//import { getInvoice } from "./Services/getInvoice";
 import { ClientView } from "./Components/ClientView";
 import { CompanyView } from "./Components/CompanyView";
 import { Header } from "./Components/Header";
 import { InvoiceView } from "./Components/InvoiceView";
 import { ProductsView } from "./Components/ProductsView";
 import { TotalView } from "./Components/TotalView";
+import { calculateTotal } from "./Services/getInvoice";
+
+const initialState = {
+    id: 1,
+    name: 'PC',
+    client: {
+        name: 'Chris',
+        lastName: 'Alonso',
+        address: {
+            country: 'Mexico',
+            city: "CDMX",
+            street: 'One Street',
+            number: 12
+        }
+    },
+    company: {
+        name: 'InvoiceAC',
+        fiscalNumber: 123456,
+    },
+    items: []
+}
 
 export default function InvoiceApp() {
-    const { id, name, client, company, items, total } = getInvoice();
-
-    //Form input por input
-    // const [productValue, setProductValue] = useState('');
-    // const [priceValue, setPriceValue] = useState(0);
-    // const [quantifyValue, setQuantify] = useState(0);
-    // const onProductChange = ({target}) => {
-    //     setProductValue(target.value);
-    // }
-    // const onPriceChange = ({target}) => {
-    //     setPriceValue(target.value);
-    // }
-    // const onQuantifyChange = ({target}) => {
-    //     setQuantify(target.value);
-    // }
-
+    
+    const [invoice, setInvoice] = useState(initialState);
+    const [counter, setCounter] = useState(4);
+    const [itemsList, setItemsList] = useState([]);
     const [values, setValues] = useState({
         product: '',
-        price: 0,
-        quantify: 0
+        price: '',
+        quantify: ''
     });
+    const [totalInvoice, setTotalInvoice] = useState(0)
 
+    const { id, name, client, company } = invoice;
     const { product, price, quantify } = values;
+
+    useEffect(() => {
+        const data = invoice;
+        setInvoice(data);
+        setItemsList(data.items);
+    }, []);
+
+    useEffect(() => {
+        setTotalInvoice(calculateTotal(itemsList));
+    }, [itemsList]);
+
 
     const handleInputChange = ({ target }) => {
         setValues({
@@ -39,15 +61,10 @@ export default function InvoiceApp() {
         })
     };
 
-    const [counter, setCounter] = useState(4);
-
-    const [itemsList, setItemsList] = useState(items);
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        //console.log(values);
         if (product.trim().length <= 1 || price.trim().length <= 0 || quantify.trim().length < 0) return;
-        setItemsList([...items, {
+        setItemsList([...itemsList, {
             id: counter,
             product: product.trim(),
             price: +price.trim(),
@@ -60,8 +77,6 @@ export default function InvoiceApp() {
         })
         setCounter(counter + 1);
     }
-
-
 
     return (
         <>
@@ -95,7 +110,7 @@ export default function InvoiceApp() {
                             title={"Products"}
                             items={itemsList}
                         />
-                        <TotalView total={total} />
+                        <TotalView total={totalInvoice} />
                         <form className="w-50" onSubmit={handleSubmit}>
                             <input
                                 type="text"

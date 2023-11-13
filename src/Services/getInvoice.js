@@ -6,8 +6,12 @@ export const getInvoice = () => {
     //     total = total + item.price * item.quantify;
     // });
 
-    const total = invoice.items
+    const total = calculateTotal(invoice.items)
+    return {...invoice, total};
+}
+
+export const calculateTotal = (items = []) => {
+    return items
         .map(item => item.price * item.quantify)
         .reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
-    return {...invoice, total};
 }
