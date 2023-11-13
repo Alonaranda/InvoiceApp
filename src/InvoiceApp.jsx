@@ -8,50 +8,66 @@ import { ProductsView } from "./Components/ProductsView";
 import { TotalView } from "./Components/TotalView";
 
 export default function InvoiceApp() {
-    const {id, name, client, company, items, total} = getInvoice();
+    const { id, name, client, company, items, total } = getInvoice();
 
-    const [productValue, setProductValue] = useState('');
-    const [priceValue, setPriceValue] = useState(0);
-    const [quantifyValue, setQuantify] = useState(0);
+    //Form input por input
+    // const [productValue, setProductValue] = useState('');
+    // const [priceValue, setPriceValue] = useState(0);
+    // const [quantifyValue, setQuantify] = useState(0);
+    // const onProductChange = ({target}) => {
+    //     setProductValue(target.value);
+    // }
+    // const onPriceChange = ({target}) => {
+    //     setPriceValue(target.value);
+    // }
+    // const onQuantifyChange = ({target}) => {
+    //     setQuantify(target.value);
+    // }
 
-    // const initialState = {};
+    const [values, setValues] = useState({
+        product: '',
+        price: 0,
+        quantify: 0
+    });
 
-    //const [values, setValues] = useState(initialState);
+    const { product, price, quantify } = values;
 
-    // const reset = () => {
-    //     setValues(initialState);
-    // };
+    const handleInputChange = ({ target }) => {
+        setValues({
+            ...values,
+            [target.name]: target.value
+        })
+    };
+
+    const [counter, setCounter] = useState(4);
 
     const [itemsList, setItemsList] = useState(items);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         //console.log(values);
+        if (product.trim().length <= 1 || price.trim().length <= 0 || quantify.trim().length < 0) return;
         setItemsList([...items, {
-            id: 5,
-            product: productValue,
-            price: +priceValue,
-            quantify: parseInt(quantifyValue, 10)
+            id: counter,
+            product: product.trim(),
+            price: +price.trim(),
+            quantify: parseInt(quantify.trim(), 10)
         }]);
-        setProductValue('');
-        setPriceValue('');
-        setQuantify('');
+        setValues({
+            product: '',
+            price: 0,
+            quantify: 0
+        })
+        setCounter(counter + 1);
     }
 
-    // const handleInputChange = ({target}) => {
-        // setValues({
-        //     ...values,
-        //     [target.name]: target.value
-        // })
-        // return values;
-    // };
 
 
     return (
         <>
             <div className="container">
                 <div className="card my-5">
-                    <Header title={"Invoice App"}/>
+                    <Header title={"Invoice App"} />
                     <div className="card-body">
                         <div className="row">
                             <div className="col">
@@ -74,47 +90,41 @@ export default function InvoiceApp() {
                                 />
                             </div>
                         </div>
-                        <br/>
+                        <br />
                         <ProductsView
                             title={"Products"}
                             items={itemsList}
                         />
-                        <TotalView total={total}/>
+                        <TotalView total={total} />
                         <form className="w-50" onSubmit={handleSubmit}>
                             <input
                                 type="text"
                                 placeholder="Product..."
                                 name="product"
-                                value={productValue}
+                                value={product}
                                 className="form-control m-3"
-                                onChange={event => {
-                                    setProductValue(event.target.value)
-                                }}
+                                onChange={handleInputChange}
                             />
                             <input
-                                type="text"
+                                type="number"
                                 name="price"
-                                value={priceValue}
+                                value={price}
                                 placeholder="$$$..."
                                 className="form-control m-3"
-                                onChange={event => {
-                                    setPriceValue(event.target.value)
-                                }}
+                                onChange={handleInputChange}
                             />
                             <input
-                                type="text"
+                                type="number"
                                 name="quantify"
-                                value={quantifyValue}
+                                value={quantify}
                                 placeholder="How much..."
                                 className="form-control m-3"
-                                onChange={event => {
-                                    setQuantify(event.target.value)
-                                }}
+                                onChange={handleInputChange}
                             />
                         </form>
                         <button
                             type="submit"
-                            className="btn btn-primary"
+                            className="btn btn-primary m-3"
                             onClick={handleSubmit}
                         >Add item</button>
                     </div>
