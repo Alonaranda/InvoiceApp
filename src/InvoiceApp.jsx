@@ -7,6 +7,7 @@ import { InvoiceView } from "./Components/InvoiceView";
 import { ProductsView } from "./Components/ProductsView";
 import { TotalView } from "./Components/TotalView";
 import { calculateTotal } from "./Services/getInvoice";
+import { FormInvoiceView } from "./Components/FormInvoiceView";
 
 const initialState = {
     id: 1,
@@ -33,15 +34,8 @@ export default function InvoiceApp() {
     const [invoice, setInvoice] = useState(initialState);
     const [counter, setCounter] = useState(4);
     const [itemsList, setItemsList] = useState([]);
-    const [values, setValues] = useState({
-        product: '',
-        price: '',
-        quantify: ''
-    });
     const [totalInvoice, setTotalInvoice] = useState(0)
-
     const { id, name, client, company } = invoice;
-    const { product, price, quantify } = values;
 
     useEffect(() => {
         const data = invoice;
@@ -53,29 +47,18 @@ export default function InvoiceApp() {
         setTotalInvoice(calculateTotal(itemsList));
     }, [itemsList]);
 
-
-    const handleInputChange = ({ target }) => {
-        setValues({
-            ...values,
-            [target.name]: target.value
-        })
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (product.trim().length <= 1 || price.trim().length <= 0 || quantify.trim().length < 0) return;
+    const handleAddItems = ({product, price, quantify}) => {
         setItemsList([...itemsList, {
             id: counter,
             product: product.trim(),
             price: +price.trim(),
             quantify: parseInt(quantify.trim(), 10)
         }]);
-        setValues({
-            product: '',
-            price: 0,
-            quantify: 0
-        })
         setCounter(counter + 1);
+    }
+
+    const handleDeleteItem = (id) => {
+        setItemsList(itemsList.filter(item => item.id !== id));
     }
 
     return (
@@ -109,39 +92,14 @@ export default function InvoiceApp() {
                         <ProductsView
                             title={"Products"}
                             items={itemsList}
+                            handlerDelete={handleDeleteItem}
                         />
-                        <TotalView total={totalInvoice} />
-                        <form className="w-50" onSubmit={handleSubmit}>
-                            <input
-                                type="text"
-                                placeholder="Product..."
-                                name="product"
-                                value={product}
-                                className="form-control m-3"
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="number"
-                                name="price"
-                                value={price}
-                                placeholder="$$$..."
-                                className="form-control m-3"
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="number"
-                                name="quantify"
-                                value={quantify}
-                                placeholder="How much..."
-                                className="form-control m-3"
-                                onChange={handleInputChange}
-                            />
-                        </form>
-                        <button
-                            type="submit"
-                            className="btn btn-primary m-3"
-                            onClick={handleSubmit}
-                        >Add item</button>
+                        <TotalView
+                            total={totalInvoice}
+                        />
+                        <FormInvoiceView
+                            handler={handleAddItems}
+                        />
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import { RowItemView } from "./RowItemView";
 import PropTypes from 'prop-types';
 
-export const ProductsView = ({title, items}) => {
+export const ProductsView = ({title, items, handlerDelete}) => {
 
     return (
         <>
@@ -12,16 +12,19 @@ export const ProductsView = ({title, items}) => {
                         <th> PRODUCT </th>
                         <th> PRICE </th>
                         <th> QUANTIFY </th>
+                        <th> Delete </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map(({ product, price, quantify }, idx) => {
+                    {items.map(({ id, product, price, quantify }, idx) => {
                         return (
                             <RowItemView
                                 key={idx}
+                                id={id}
                                 product={product}
                                 price={price}
                                 quantify={quantify}
+                                handlerDelete={handlerDelete}
                             />
                         )
                     })}
@@ -33,5 +36,6 @@ export const ProductsView = ({title, items}) => {
 
 ProductsView.propTypes = {
     title: PropTypes.string,
-    items: PropTypes.array.isRequired
+    items: PropTypes.array.isRequired,
+    handlerDelete: PropTypes.func.isRequired
 };
